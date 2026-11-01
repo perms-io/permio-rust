@@ -1,17 +1,17 @@
 [package]
 name = "permio"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 # tonic 0.14 needs Rust 1.88.
 rust-version = "1.88"
 resolver = "3"
-description = "Rust SDK for perms.io: permission checks, grants, groups and the raw gRPC API"
+description = "Rust SDK for perms.io, hosted RBAC authorization: fine-grained permission checks, roles, grants and groups over gRPC"
 license = "Apache-2.0"
 repository = "https://github.com/perms-io/permio-rust"
 homepage = "https://perms.io"
 documentation = "https://docs.rs/permio"
 readme = "README.md"
-keywords = ["permissions", "rbac", "authorization", "grpc", "perms"]
+keywords = ["authorization", "rbac", "permissions", "access-control", "authz"]
 categories = ["authentication", "api-bindings", "web-programming"]
 include = ["src/**/*.rs", "examples/**/*.rs", "README.md", "CHANGELOG.md", "LICENSE", "Cargo.toml"]
 

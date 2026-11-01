@@ -4,7 +4,14 @@ All notable changes to this crate are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the crate uses
 [Semantic Versioning](https://semver.org/).
 
-## [0.1.0] - Unreleased
+## [0.1.1] - Unreleased
+
+### Changed
+- crates.io README: install from crates.io, badges, and the releasing notes
+  moved to `RELEASING.md`.
+- Fuller crate description and keywords (authorization, RBAC, access control).
+
+## [0.1.0] - 2026-10-27
 
 The first release of the hand-written SDK. The crate is renamed from
 `permio-rust` (generated stubs only, never published) to `permio`.
