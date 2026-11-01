@@ -4,6 +4,18 @@ All notable changes to this crate are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the crate uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - Unreleased
+
+### Removed
+- **Breaking:** the `DEV_ENDPOINT` constant. Pass the endpoint URL to
+  `ClientBuilder::endpoint` instead.
+
+### Changed
+- The live integration test no longer has a default target: it is skipped
+  unless both `PERMIO_API_KEY` and `PERMIO_BASE_URL` are set. Its host
+  allowlist is loopback, `*.localhost`, `*.test` and any `*.perms.io` host
+  except production (`api.perms.io`).
+
 ## [0.1.1] - Unreleased
 
 ### Changed
@@ -18,8 +30,8 @@ The first release of the hand-written SDK. The crate is renamed from
 
 ### Added
 - `permio::Client` with a builder: API key (or `PERMIO_API_KEY`) with local
-  format and checksum validation, endpoint (`DEFAULT_ENDPOINT` /
-  `DEV_ENDPOINT`), default project, per-attempt timeout (10 s), retries and an
+  format and checksum validation, endpoint (`DEFAULT_ENDPOINT` / a constant
+  for the development API), default project, per-attempt timeout (10 s), retries and an
   injectable tonic `Channel`.
 - Checks: `check`, `check_all`, `check_any`, `check_detailed`, `assert`,
   `assert_detailed`, `batch_check` (split into concurrent calls above 100
@@ -82,7 +94,7 @@ The first release of the hand-written SDK. The crate is renamed from
   of silently returning a truncated listing.
 - `batch_check` keeps at most 4 `BatchCheck` calls in flight.
 - The live integration test only runs against an allowlist of hosts
-  (`dev-api.perms.io`, loopback, `*.localhost`, `*.test`) instead of
+  (the development API, loopback, `*.localhost`, `*.test`) instead of
   refusing a blocklist, and fails rather than skips on any other target.
 - Licensed under Apache-2.0 (LICENSE file added).
 - Minimum Rust version is 1.88 (required by tonic 0.14).

@@ -1,7 +1,7 @@
 //! Checks a permission, then lists the project's roles through the raw client.
 //!
 //! Run with: PERMIO_API_KEY=perms_... cargo run --example client -- my-project
-//! (add PERMIO_ENDPOINT=https://dev-api.perms.io for the development API).
+//! (add PERMIO_ENDPOINT=<url> to use an endpoint other than production).
 use futures_util::TryStreamExt;
 use permio::raw::permissions::v1::ListRolesRequest;
 

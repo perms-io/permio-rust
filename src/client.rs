@@ -22,8 +22,6 @@ use crate::transport::{CallTimeout, RetryConfig, Transport};
 
 /// Production API.
 pub const DEFAULT_ENDPOINT: &str = "https://api.perms.io";
-/// Development API.
-pub const DEV_ENDPOINT: &str = "https://dev-api.perms.io";
 /// Environment variable read for the API key when none is given to the builder.
 pub const API_KEY_ENV: &str = "PERMIO_API_KEY";
 /// Default per-attempt timeout.
@@ -90,8 +88,7 @@ impl ClientBuilder {
         self
     }
 
-    /// API endpoint URL. Defaults to production, [`DEFAULT_ENDPOINT`]; use
-    /// [`DEV_ENDPOINT`] for the development API.
+    /// API endpoint URL. Defaults to production, [`DEFAULT_ENDPOINT`].
     #[must_use]
     pub fn endpoint(mut self, url: impl Into<String>) -> Self {
         self.endpoint = Some(url.into());
@@ -796,7 +793,7 @@ impl Client {
     /// # fn demo() -> Result<(), permio::Error> {
     /// let client = permio::Client::builder()
     ///     .api_key("perms_...")
-    ///     .endpoint(permio::DEV_ENDPOINT)
+    ///     .endpoint("https://api.example.com")
     ///     .project("my-app")
     ///     .timeout(std::time::Duration::from_secs(5))
     ///     .retries(3)

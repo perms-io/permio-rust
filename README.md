@@ -51,7 +51,7 @@ use std::time::Duration;
 
 let client = permio::Client::builder()
     .api_key("perms_...")               // default: the PERMIO_API_KEY env var; format + checksum checked locally
-    .endpoint(permio::DEV_ENDPOINT)     // default permio::DEFAULT_ENDPOINT (https://api.perms.io, production)
+    .endpoint("https://api.example.com") // default permio::DEFAULT_ENDPOINT (https://api.perms.io, production)
     .project("my-app")                  // default project for every call
     .timeout(Duration::from_secs(5))    // per attempt; default 10 s, Duration::ZERO disables
     .call_timeout(Duration::from_secs(8)) // overall per call, across retries; default none
@@ -96,7 +96,6 @@ bundled webpki roots. Without it only `http://` endpoints work.
 | Constant | URL |
 | --- | --- |
 | `permio::DEFAULT_ENDPOINT` | `https://api.perms.io` (production, the default) |
-| `permio::DEV_ENDPOINT` | `https://dev-api.perms.io` (development) |
 
 An API key only works on the environment and project it was created in.
 `client.who_am_i()` tells you which project a key belongs to and whether it
@@ -337,17 +336,19 @@ semver-incompatible `tonic`, `prost` or `prost-types` release (e.g. 0.14 to
 `tests/live.rs` runs the same scenarios as permio-js against a real
 deployment (whoAmI, grant/check, batch check, list access, who has access,
 revoke, groups, bad key). It is skipped unless `PERMIO_API_KEY` is set and
-uses `PERMIO_BASE_URL` (default the dev API). Because it writes, it fails
-unless that URL's host is on an allowlist: `dev-api.perms.io`, `localhost`,
-`127.0.0.1`, `::1`, or a `*.localhost` / `*.test` name. It uses
+also skipped unless `PERMIO_BASE_URL` is set. Because it writes, it fails
+unless that URL's host is on an allowlist: `localhost`, `127.0.0.1`, `::1`,
+a `*.localhost` / `*.test` name, or a `*.perms.io` host other than production
+(`api.perms.io`). It uses
 `PERMIO_PROJECT` or the key's own project. It needs a full-access
 key and creates fixed `sdk-it-rust-*` IDs, removed before and after the run.
 
 ```sh
-PERMIO_API_KEY=perms_... cargo test --test live -- --nocapture
+PERMIO_API_KEY=perms_... PERMIO_BASE_URL=http://localhost:8080 cargo test --test live -- --nocapture
 ```
 
-CI runs it when the `PERMIO_DEV_API_KEY` secret is set.
+CI runs it when the `PERMIO_DEV_API_KEY` and `PERMIO_DEV_BASE_URL` secrets are
+set.
 
 ## Development
 

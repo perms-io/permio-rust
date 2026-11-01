@@ -54,7 +54,7 @@ pub use apikey::{is_valid_api_key, validate_api_key, ApiKeyKind, API_KEY_LENGTH}
 pub use client::{
     ApiKeyAccess, BatchCheck, BatchCheckEntry, Check, CheckResult, Client, ClientBuilder, Grant,
     ListAccess, PrincipalKind, WhoAmI, WhoHasAccess, API_KEY_ENV, DEFAULT_ENDPOINT,
-    DEFAULT_MAX_BATCH_RESOURCES, DEFAULT_MAX_RESULTS, DEFAULT_TIMEOUT, DEV_ENDPOINT,
+    DEFAULT_MAX_BATCH_RESOURCES, DEFAULT_MAX_RESULTS, DEFAULT_TIMEOUT,
 };
 pub use error::{parse_missing_permissions, server_retry_delay, Error, MissingPermission};
 pub use groups::{group, AddMembersResult, Groups, RemoveMembersResult, GROUP_PRINCIPAL_PREFIX};
