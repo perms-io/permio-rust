@@ -1,7 +1,13 @@
 # permio
 
-Rust SDK for [perms.io](https://perms.io), permissions as a service with
-hierarchical resource-URI RBAC.
+[![crates.io](https://img.shields.io/crates/v/permio.svg)](https://crates.io/crates/permio)
+[![downloads](https://img.shields.io/crates/d/permio.svg)](https://crates.io/crates/permio)
+[![docs.rs](https://img.shields.io/docsrs/permio)](https://docs.rs/permio)
+[![license](https://img.shields.io/crates/l/permio.svg)](LICENSE)
+
+Rust SDK for [perms.io](https://perms.io), hosted authorization (permissions
+as a service) with hierarchical resource-URI RBAC: fine-grained permission
+checks, roles, grants and groups for multi-tenant apps.
 
 - One call to ask "may this principal do X on this resource?"
 - Batch checks, groups, grants and "where can they do X?" queries that turn into database filters
@@ -361,18 +367,6 @@ picks versions compatible with `rust-version`) and commit it.
 The files under `src/permio/` and `src/pagination/` are generated from
 [perms-io/proto](https://github.com/perms-io/proto) (prost 0.14 / tonic
 0.14); don't edit them by hand. The hand-written SDK is everything else.
-
-## Releasing
-
-Publishing is done by `.github/workflows/release.yml` on a `v*` tag that
-matches the version in `Cargo.toml`:
-
-1. Bump `version` in `Cargo.toml` and update `CHANGELOG.md`.
-2. Tag and push: `git tag v0.1.0 && git push origin v0.1.0`.
-
-The workflow needs a crates.io API token (scope `publish-new` /
-`publish-update` for `permio`) in the repository secret
-`CARGO_REGISTRY_TOKEN`.
 
 ## License
 
