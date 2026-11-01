@@ -4,7 +4,7 @@ All notable changes to this crate are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the crate uses
 [Semantic Versioning](https://semver.org/).
 
-## [0.2.0] - Unreleased
+## [0.2.0] - 2026-11-01
 
 ### Removed
 - **Breaking:** the `DEV_ENDPOINT` constant. Pass the endpoint URL to
@@ -15,10 +15,6 @@ All notable changes to this crate are documented here. The format follows
   unless both `PERMIO_API_KEY` and `PERMIO_BASE_URL` are set. Its host
   allowlist is loopback, `*.localhost`, `*.test` and any `*.perms.io` host
   except production (`api.perms.io`).
-
-## [0.1.1] - Unreleased
-
-### Changed
 - crates.io README: install from crates.io, badges, and the releasing notes
   moved to `RELEASING.md`.
 - Fuller crate description and keywords (authorization, RBAC, access control).
