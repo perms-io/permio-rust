@@ -1,11 +1,12 @@
 //! Integration test against a real deployment. Skipped unless PERMIO_API_KEY is
-//! set. PERMIO_BASE_URL defaults to the development API (DEV_ENDPOINT). Because
-//! the test writes, it only runs against an allowlist of hosts: the dev API,
-//! localhost / 127.0.0.1 / ::1, and *.localhost / *.test names. The key needs
-//! full access to its project (PERMIO_PROJECT, default: the key's project from
-//! whoAmI):
+//! set, and likewise skipped unless PERMIO_BASE_URL is set. Because the test
+//! writes, it only runs against an allowlist of hosts: localhost / 127.0.0.1 /
+//! ::1, *.localhost / *.test names, and *.perms.io hosts other than production
+//! (api.perms.io). The key needs full access to its project (PERMIO_PROJECT,
+//! default: the key's project from whoAmI):
 //!
-//!   PERMIO_API_KEY=perms_... cargo test --test live -- --nocapture
+//!   PERMIO_API_KEY=perms_... PERMIO_BASE_URL=http://localhost:8080 \
+//!     cargo test --test live -- --nocapture
 //!
 //! Everything it creates uses fixed IDs prefixed "sdk-it-rust" and is removed
 //! before and after the run, so an interrupted run is cleaned up by the next
@@ -15,7 +16,7 @@ use std::panic::AssertUnwindSafe;
 
 use futures_util::FutureExt;
 use permio::raw::permissions::v1::{CreatePermissionRequest, DeletePermissionRequest};
-use permio::{group, BatchCheck, Client, Error, Grant, DEV_ENDPOINT};
+use permio::{group, BatchCheck, Client, Error, Grant};
 
 const ALICE: &str = "sdk-it-rust-alice";
 const BOB: &str = "sdk-it-rust-bob";
@@ -27,9 +28,9 @@ const DOCS: &str = "/sdk-it-rust/docs";
 const DOC1: &str = "/sdk-it-rust/docs/1";
 const OTHER: &str = "/sdk-it-rust/other";
 
-/// Whether the live test may write to `url`: an http(s) URL whose host is the
-/// dev API, a loopback address, or a `*.localhost` / `*.test` name. Anything
-/// else, production included, is refused.
+/// Whether the live test may write to `url`: an http(s) URL whose host is a
+/// loopback address, a `*.localhost` / `*.test` name, or a `*.perms.io` host
+/// other than production (`api.perms.io`). Anything else is refused.
 fn is_allowed_target(url: &str) -> bool {
     let Ok(uri) = url.parse::<http::Uri>() else {
         return false;
@@ -49,17 +50,20 @@ fn is_allowed_target(url: &str) -> bool {
         .strip_prefix('[')
         .and_then(|h| h.strip_suffix(']'))
         .unwrap_or(&host);
-    matches!(host, "dev-api.perms.io" | "localhost" | "127.0.0.1" | "::1")
+    matches!(host, "localhost" | "127.0.0.1" | "::1")
         || host.ends_with(".localhost")
         || host.ends_with(".test")
+        || (host.ends_with(".perms.io") && host != "api.perms.io")
 }
 
 #[test]
 fn live_target_allowlist() {
     for ok in [
-        DEV_ENDPOINT,
-        "https://dev-api.perms.io/",
-        "https://DEV-API.perms.io:443",
+        "https://staging.perms.io",
+        "https://staging.perms.io/",
+        "https://STAGING.perms.io:443",
+        "https://staging.perms.io.",
+        "https://temp-api.perms.io",
         "http://localhost:8080",
         "http://127.0.0.1:50051",
         "http://[::1]:50051",
@@ -71,14 +75,19 @@ fn live_target_allowlist() {
     for bad in [
         permio::DEFAULT_ENDPOINT,
         "https://api.perms.io:443",
-        "https://temp-api.perms.io",
-        "https://staging-api.perms.io",
-        "https://dev-api.perms.io.evil.com",
-        "https://dev-api.perms.io@api.perms.io",
+        "https://API.perms.io",
+        "https://api.perms.io.",
+        "https://api.perms.io/",
+        "https://perms.io",
+        "https://foo.perms.io.evil.com",
+        "https://staging.perms.io.evil.com",
+        "https://evilperms.io",
+        "https://x@api.perms.io",
+        "https://staging.perms.io@api.perms.io",
         "https://localhost.example.com",
         "https://example.test.com",
         "ftp://localhost",
-        "dev-api.perms.io",
+        "staging.perms.io",
         "",
         "not a url",
     ] {
@@ -110,15 +119,18 @@ async fn live_integration() {
         eprintln!("PERMIO_API_KEY is not set; skipping the live integration test");
         return;
     };
-    let base_url = std::env::var("PERMIO_BASE_URL")
+    let Some(base_url) = std::env::var("PERMIO_BASE_URL")
         .ok()
         .filter(|u| !u.is_empty())
-        .unwrap_or_else(|| DEV_ENDPOINT.to_string());
+    else {
+        eprintln!("PERMIO_BASE_URL is not set; skipping the live integration test");
+        return;
+    };
     // Fail rather than skip: a misconfigured target must not look like a pass.
     assert!(
         is_allowed_target(&base_url),
-        "refusing to run the live integration test against {base_url}: only the dev API, \
-         localhost and *.localhost / *.test hosts are allowed"
+        "refusing to run the live integration test against {base_url}: only localhost, \
+         *.localhost / *.test hosts and non-production *.perms.io hosts are allowed"
     );
 
     let probe = Client::builder()
