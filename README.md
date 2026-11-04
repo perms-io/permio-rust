@@ -5,6 +5,10 @@
 [![docs.rs](https://img.shields.io/docsrs/permio)](https://docs.rs/permio)
 [![license](https://img.shields.io/crates/l/permio.svg)](LICENSE)
 
+**[Permio](https://perms.io) is hosted authorization for your app: RBAC and fine-grained permission checks on hierarchical resources, for multi-tenant SaaS.**
+
+[Website](https://perms.io) · [Rust SDK docs](https://docs.perms.io/sdk/rust/) · [Quickstart](https://docs.perms.io/quickstart/) · [API reference](https://docs.rs/permio) · [Dashboard](https://app.perms.io)
+
 Rust SDK for [perms.io](https://perms.io), hosted authorization (permissions
 as a service) with hierarchical resource-URI RBAC: fine-grained permission
 checks, roles, grants and groups for multi-tenant apps.
@@ -43,6 +47,8 @@ A principal lacking the permission is a normal answer: `check` returns
 `Ok(false)`. It only returns `Err` when the call itself fails (bad key,
 malformed input, network trouble). A runnable version is in
 [`examples/client.rs`](examples/client.rs).
+
+**Next:** the [Rust SDK guide](https://docs.perms.io/sdk/rust/) covers configuration, filtering lists by access, groups and errors in depth, and [how Permio works](https://docs.perms.io/how-it-works/) explains resources, roles and inheritance.
 
 ## Configuration
 
